@@ -1,7 +1,7 @@
 # AWS Static Signup Form Project
 
 Prerequisites:
-  AWS Free account
+  Signup for AWS Free account
   GitHub public account
 
 Create git project (my-signup-form)
@@ -10,11 +10,13 @@ Create git project (my-signup-form)
 2) manually create an s3 bucket
       make static website
 3) copy index.html to s3 bucket
+   - make file public read
 4) find URL and launch in Browser
-    - is there a problem?
 
-1) Add pipeline.yml for for creating S3 Bucket
 
+1) Add pipeline.yml for creating S3 Bucket
+
+http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-s3-bucket.html
 ```
 AWSTemplateFormatVersion: '2010-09-09'
 Description: Pipeline for building pipeline for signup form S3 static website
@@ -40,7 +42,7 @@ Resources:
 
 4) Create service role used for running CloudFormation templates.
     Use Console to create service role
-    Give access to S3 (create, delete)
+    Give access to S3 (create, delete). Attach AmazonS3FullAccess Policy
     Review Edit Trust Relationship
 ```
 {
@@ -74,6 +76,210 @@ Resources:
 5) Run Create Stack in CloudFormation using new Role.
 
 
+6) Add CodeBuildRole and CodePipelineRole to cloud formation pipeline.yml template
+```
+  CodeBuildRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service:
+            - codebuild.amazonaws.com
+          Action:
+          - sts:AssumeRole
+      Policies:
+      - PolicyName: codebuild-service
+        PolicyDocument:
+          Statement:
+          - Effect: Allow
+            Action: "*"
+            Resource: "*"
+          Version: '2012-10-17'
+  CodePipelineRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service:
+            - codepipeline.amazonaws.com
+          Action:
+          - sts:AssumeRole
+      Policies:
+      - PolicyName: codepipeline-service
+        PolicyDocument:
+          Statement:
+          - Action:
+            - codebuild:*
+            Resource: "*"
+            Effect: Allow
+          - Action:
+            - s3:GetObject
+            - s3:GetObjectVersion
+            - s3:GetBucketVersioning
+            Resource: "*"
+            Effect: Allow
+          - Action:
+            - s3:PutObject
+            Resource:
+            - arn:aws:s3:::codepipeline*
+            Effect: Allow
+          - Action:
+            - s3:*
+            - cloudformation:*
+            - iam:PassRole
+            Resource: "*"
+            Effect: Allow
+          Version: '2012-10-17'
+```
 
 
+6) Create roles for pipeline and build
+http://docs.aws.amazon.com/codebuild/latest/userguide/how-to-create-pipeline.html
+http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-role.html
 
+Create Policy for creating roles, and attach to role
+```
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "Stmt1506012004000",
+            "Effect": "Allow",
+            "Action": [
+                "iam:AttachRolePolicy",
+                "iam:CreatePolicy",
+                "iam:CreateRole",
+                "iam:DeletePolicy",
+                "iam:DeleteRole",
+                "iam:PutRolePolicy",
+                "iam:DeleteRolePolicy",
+                "iam:GetRole",
+                "iam:PassRole"
+            ],
+            "Resource": [
+                "arn:aws:iam::651438405399:role/*"
+            ]
+        },
+        {
+            "Sid": "",
+            "Effect": "Allow",
+            "Action": [
+                "codebuild:CreateProject",
+                "codebuild:DeleteProject",
+                "codebuild:UpdateProject",
+                "codepipeline:CreatePipeline",
+                "codepipeline:DeletePipeline",
+                "codepipeline:GetPipeline",
+                "codepipeline:GetPipelineState"
+            ],
+            "Resource": [
+                "*"
+            ]
+        }
+    ]
+}
+```
+
+8) Add CodeBuild resource and pipeline bucket
+
+Add new parameters for github options
+
+```
+  GitHubUser:
+    Type: String
+    Description: GitHub User
+    Default: "tbeauvais"
+  GitHubRepo:
+    Type: String
+    Description: Name of GitHub repo
+    Default: "static-signup"
+  GitHubToken:
+    NoEcho: true
+    Type: String
+    Description: OAuthToken access token for repo. See https://github.com/settings/tokens
+```
+
+Add pipeline bucket (name will be generated)
+```
+  PipelineBucket:
+    Type: AWS::S3::Bucket
+    DeletionPolicy: Delete
+```
+
+Add
+```
+  CodeBuildDeploySite:
+    Type: AWS::CodeBuild::Project
+    DependsOn: CodeBuildRole
+    Properties:
+      Name: !Sub ${AWS::StackName}-DeploySite
+      Description: Deploy site to S3
+      ServiceRole: !GetAtt CodeBuildRole.Arn
+      Artifacts:
+        Type: CODEPIPELINE
+      Environment:
+        Type: !Ref BuildType
+        ComputeType: BUILD_GENERAL1_SMALL
+        Image: "aws/codebuild/ubuntu-base:14.04"
+      Source:
+        Type: CODEPIPELINE
+        BuildSpec: !Sub |
+          version: 0.1
+          phases:
+            post_build:
+              commands:
+                - aws s3 cp --recursive --acl public-read ./index.html s3://${SiteBucketName}/
+          artifacts:
+            type: zip
+            files:
+              - ./index.html
+      TimeoutInMinutes: 10
+```
+
+
+```
+  Pipeline:
+    Type: AWS::CodePipeline::Pipeline
+    Properties:
+      RoleArn: !GetAtt CodePipelineRole.Arn
+      Stages:
+      - Name: Source
+        Actions:
+        - InputArtifacts: []
+          Name: Source
+          ActionTypeId:
+            Category: Source
+            Owner: ThirdParty
+            Version: '1'
+            Provider: GitHub
+          OutputArtifacts:
+          - Name: SourceOutput
+          Configuration:
+            Owner: !Ref GitHubUser
+            Repo: !Ref GitHubRepo
+            Branch: master
+            OAuthToken: !Ref GitHubToken
+          RunOrder: 1
+      - Name: Deploy
+        Actions:
+        - Name: Artifact
+          ActionTypeId:
+            Category: Build
+            Owner: AWS
+            Version: '1'
+            Provider: CodeBuild
+          InputArtifacts:
+          - Name: SourceOutput
+          OutputArtifacts:
+          - Name: DeployOutput
+          Configuration:
+            ProjectName: !Ref CodeBuildDeploySite
+          RunOrder: 1
+      ArtifactStore:
+        Type: S3
+        Location: !Ref PipelineBucket
+```
