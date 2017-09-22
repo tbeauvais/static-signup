@@ -6,10 +6,14 @@
 * Access to Signup Forms
 
 ## Step 1
-* Create git project (my-signup-form)
+Project creation
+
+* Create git project (e.g. my-signup-form)
 * Add index.html that includes a sign-up form
 
 ## Step 2
+Manually create static website
+
 * Use AWS Console to create a new S3 bucket 
   * Make S3 bucket a static website (under bucket properties)
 * Upload index.html to S3 bucket
