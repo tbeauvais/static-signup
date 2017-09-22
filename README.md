@@ -10,14 +10,19 @@
 * Add index.html that includes a sign-up form
 
 ## Step 2
-* Use AWS Console to create a new S3 bucket
-  * Make S3 bucket a static website
-* Copy index.html to S3 bucket
-   * make file public read
-* find URL and launch in Browser
+* Use AWS Console to create a new S3 bucket 
+  * Make S3 bucket a static website (under bucket properties)
+* Upload index.html to S3 bucket
+   * make index.html file public read
+* Find URL and launch in Browser (under bucket properties/Static website hosting)
 
+## Step 3
+* Delete the S3 bucket you created in step 2
 
-1) Add pipeline.yml for creating S3 Bucket
+## Step 4
+We will now stat to automate the creation of infrastructure 
+
+* Add a file named pipeline.yml to your github project with the following content
 
 http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-s3-bucket.html
 ```
@@ -39,14 +44,19 @@ Resources:
         IndexDocument: index.html
 ```
 
-2) Run Create Stack in CloudFormation using your current login.
 
-3) Delete Stack
+* Run Create Stack in CloudFormation using your current login. Use the pipeline.yml as the template.
+  * Verify the S3 bucket was created
 
-4) Create service role used for running CloudFormation templates.
-    Use Console to create service role
-    Give access to S3 (create, delete). Attach AmazonS3FullAccess Policy
-    Review Edit Trust Relationship
+* Run Delete Stack in CloudFormation for the stack you just created
+
+## Step 5
+Here we will create a new IAM Role that we will use from now on when running cloudformation operations.
+
+* Create service role used for running CloudFormation templates.
+  * Use Console to create service role
+  * Give access to S3 (create, delete). Attach AmazonS3FullAccess Policy
+  * Review Edit Trust Relationship
 ```
 {
   "Version": "2012-10-17",
