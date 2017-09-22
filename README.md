@@ -24,7 +24,7 @@ Manually create static website
 * Delete the S3 bucket you created in step 2
 
 ## Step 4
-We will now stat to automate the creation of infrastructure 
+We will now start to automate the creation of infrastructure 
 
 * Add a file named pipeline.yml to your github project with the following content
 
