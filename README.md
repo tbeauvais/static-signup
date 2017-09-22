@@ -1,17 +1,20 @@
 # AWS Static Signup Form Project
 
-Prerequisites:
-  Signup for AWS Free account
-  GitHub public account
+## Prerequisites
+* Signup for AWS Free account
+* GitHub public account
+* Access to Signup Forms
 
-Create git project (my-signup-form)
+## Step 1
+* Create git project (my-signup-form)
+* Add index.html that includes a sign-up form
 
-1) create index.html that includes sign-up form
-2) manually create an s3 bucket
-      make static website
-3) copy index.html to s3 bucket
-   - make file public read
-4) find URL and launch in Browser
+## Step 2
+* Use AWS Console to create a new S3 bucket
+  * Make S3 bucket a static website
+* Copy index.html to S3 bucket
+   * make file public read
+* find URL and launch in Browser
 
 
 1) Add pipeline.yml for creating S3 Bucket
