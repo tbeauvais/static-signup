@@ -217,12 +217,12 @@ Add
     DependsOn: CodeBuildRole
     Properties:
       Name: !Sub ${AWS::StackName}-DeploySite
-      Description: Deploy site to S3
+      Description: Deploy signup form site to S3
       ServiceRole: !GetAtt CodeBuildRole.Arn
       Artifacts:
         Type: CODEPIPELINE
       Environment:
-        Type: !Ref BuildType
+        Type: LINUX_CONTAINER
         ComputeType: BUILD_GENERAL1_SMALL
         Image: "aws/codebuild/ubuntu-base:14.04"
       Source:
@@ -232,7 +232,8 @@ Add
           phases:
             post_build:
               commands:
-                - aws s3 cp --recursive --acl public-read ./index.html s3://${SiteBucketName}/
+                - ls
+                - aws s3 cp --acl public-read ./index.html s3://${SiteBucketName}/
           artifacts:
             type: zip
             files:
@@ -283,3 +284,10 @@ Add
         Type: S3
         Location: !Ref PipelineBucket
 ```
+
+
+# Next Steps
+Move BuildSpec commands from inline to buildspec.yml file (http://docs.aws.amazon.com/codebuild/latest/userguide/getting-started.html#getting-started-create-build-spec)
+Restructure project (move site/html under folder)
+Add simple test
+Add aprover stage
