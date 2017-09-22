@@ -93,9 +93,16 @@ Resources:
       - PolicyName: codebuild-service
         PolicyDocument:
           Statement:
-          - Effect: Allow
-            Action: "*"
+          - Action:
+            - logs:PutLogEvents
+            - logs:CreateLogGroup
+            - logs:CreateLogStream
+            - s3:GetObject
+            - s3:GetObjectVersion
+            - s3:PutObject
+            - s3:PutObjectAcl
             Resource: "*"
+            Effect: Allow
           Version: '2012-10-17'
   CodePipelineRole:
     Type: AWS::IAM::Role
