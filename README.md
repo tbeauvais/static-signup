@@ -10,8 +10,9 @@ As part of this project we will create a CloudFormation template which is used t
 ![cloudformation_static](/doc/cloudformation_static.png)
 
 
-
+The CodePipeline is responsible for monitoring the GitHub repository, and pushing any changes to the S3 bucket.
 ![codepipeline_static](/doc/codepipeline_static.png)
+
 
 ## Prerequisites
 * Signup for AWS Free account
