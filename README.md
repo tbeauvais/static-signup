@@ -96,7 +96,7 @@ Here we will create a new IAM Role (sample-cloudformation-role) that we will use
 * Delete the stack
 
 # Step 6
-Add roles and policies for CodeBuildRole and CodePipelineRole 
+Add roles and policies for CodeBuildRole and CodePipelineRole
 
 * Add CodeBuildRole and CodePipelineRole to cloud formation pipeline.yml template
 http://docs.aws.amazon.com/codebuild/latest/userguide/how-to-create-pipeline.html
@@ -170,7 +170,7 @@ http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-r
 ```
 
 
-* Create a new Policy (sample-cloud-formation-policy) so that the cloudformation role is able to manage roles, codepipeline, codebuild.
+* Create a new Policy (sample-cloud-formation-policy) so that the CloudFormation role is able to manage roles, codepipeline, codebuild.
 ```
 {
     "Version": "2012-10-17",
@@ -320,7 +320,7 @@ Add CodeBuild resource and S3 pipeline bucket
 Create CloudFormation stack using pipeline.yml
 
 * Enter Github OAuthToken access token
-
+![GitHub Token](/doc/github_token.png)
 
 * Verify stack ran successfily
 * Verify CodePipeline runs
