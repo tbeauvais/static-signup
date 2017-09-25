@@ -14,7 +14,7 @@ Project creation
 ## Step 2
 Manually create static website
 
-* Use AWS Console to create a new S3 bucket 
+* Use AWS Console to create a new S3 bucket
   * Make S3 bucket a static website (under bucket properties)
 * Upload index.html to S3 bucket
    * make index.html file public read
@@ -24,7 +24,7 @@ Manually create static website
 * Delete the S3 bucket you created in step 2
 
 ## Step 4
-We will now start to automate the creation of infrastructure 
+We will now start to automate the creation of infrastructure
 
 * Add a file named pipeline.yml to your github project with the following content
 
@@ -314,4 +314,4 @@ Add
 Move BuildSpec commands from inline to buildspec.yml file (http://docs.aws.amazon.com/codebuild/latest/userguide/getting-started.html#getting-started-create-build-spec)
 Restructure project (move site/html under folder)
 Add simple test
-Add aprover stage
+Add approver stage
