@@ -322,7 +322,7 @@ Create CloudFormation stack using pipeline.yml
 * Enter Github OAuthToken access token
 ![GitHub Token](/doc/github_token.png)
 
-* Verify stack ran successfily
+* Verify stack ran successfully
 * Verify CodePipeline runs
 
 # Step 9
