@@ -1,5 +1,18 @@
 # AWS Static Signup Form Project
 
+## Overview
+
+As part of this project we will create a CloudFormation template which is used to create the following infrastructure
+* Roles for the CodePipeline and CodeBuild
+* S3 Bucket to host the site content
+* CodePipeline and CodeBuild, and S3 bucket used for CodePipeline artifact
+
+![cloudformation_static](/doc/cloudformation_static.png)
+
+
+
+![codepipeline_static](/doc/codepipeline_static.png)
+
 ## Prerequisites
 * Signup for AWS Free account
 * GitHub public account
