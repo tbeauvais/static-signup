@@ -34,6 +34,8 @@ Manually create static website
    * make index.html file public read
 * Find URL and launch in Browser (under bucket properties/Static website hosting)
 
+![s3_static](/doc/s3_static.png)
+
 ## Step 3
 * Delete the S3 bucket you created in step 2
 
@@ -42,6 +44,7 @@ We will now start to automate the creation of infrastructure
 
 * Add a file named pipeline.yml to your github project with the following content
 
+This initial CloudFormation template will create the S3 bucket that will hold the website content. The parameters allow you to set/change values that are fed into the template.
 http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-s3-bucket.html
 ```
 AWSTemplateFormatVersion: '2010-09-09'
@@ -66,13 +69,18 @@ Resources:
 * Run Create Stack in CloudFormation using your current login. Use the pipeline.yml as the template.
   * Verify the S3 bucket was created
 
+![cloud_formation_stack](/doc/cloud_formation_stack.png)
+
+
+![cloud_formation_no_role](/doc/cloud_formation_no_role.png)
+
 * Run Delete Stack in CloudFormation for the stack you just created
 
 ## Step 5
-Here we will create a new IAM Role (sample-cloudformation-role) that we will use from now on when running cloudformation operations.
+Here we will create a new IAM Role (sample-cloudformation-role) that we will use from now on when running CloudFormation operations.
 
 * Create service role used for running CloudFormation templates.
-  * Use Console to create service role (sample-cloudformation-role)
+  * Use Console to create a Service Role (sample-cloudformation-role)
   * Give access to S3 (create, delete). Attach AmazonS3FullAccess Policy
   * Review Edit Trust Relationship
 ```
@@ -104,8 +112,20 @@ Here we will create a new IAM Role (sample-cloudformation-role) that we will use
 }
 ```
 
+Select CloudFormation Service Role
+![create_service_role](/doc/create_service_role.png)
+
+
+Add the AmazonS3FullAccess Policy
+![service_role_policy](/doc/service_role_policy.png)
+
+
+
 * Run Create Stack in CloudFormation using new Role.
   * Verify S3 bucket
+
+![cloud_formation_select_role](/doc/cloud_formation_select_role.png)
+
 
 * Delete the stack
 
