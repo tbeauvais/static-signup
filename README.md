@@ -37,7 +37,7 @@ Manually create static website
 ![s3_static](/doc/s3_static.png)
 
 ## Step 3
-* Delete the S3 bucket you created in step 2
+* Delete the S3 bucket you created in step 2 (using AWS Console)
 
 ## Step 4
 We will now start to automate the creation of infrastructure
