@@ -203,6 +203,8 @@ http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-r
           Version: '2012-10-17'
 ```
 
+Note - If you were to create a new stack now with this template it would fail because of the permissions. You can try this.
+
 
 * Create a new Policy (sample-cloud-formation-policy) so that the CloudFormation Service role is able to manage roles, codepipeline, codebuild.
 
