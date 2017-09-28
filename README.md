@@ -71,7 +71,7 @@ Resources:
 
 ![cloud_formation_stack](/doc/cloud_formation_stack.png)
 
-
+For this first time we will NOT select a role.
 ![cloud_formation_no_role](/doc/cloud_formation_no_role.png)
 
 * Run Delete Stack in CloudFormation for the stack you just created
@@ -204,7 +204,15 @@ http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-r
 ```
 
 
-* Create a new Policy (sample-cloud-formation-policy) so that the CloudFormation role is able to manage roles, codepipeline, codebuild.
+* Create a new Policy (sample-cloud-formation-policy) so that the CloudFormation Service role is able to manage roles, codepipeline, codebuild.
+
+![policy_create](/doc/policy_create.png)
+
+Select permission to match the following or you can just edit after the creation.
+![policy_permissions](/doc/policy_permissions.png)
+
+
+
 ```
 {
     "Version": "2012-10-17",
@@ -248,6 +256,10 @@ http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-r
 ```
 * Attach sample-cloud-formation-policy to role sample-cloudformation-role
 
+In IAM find the role (sample-cloudformation-role) and attach the policy we created to the role.
+![policy_permissions](/doc/policy_permissions.png)
+
+
 # Step 7
 Add CodeBuild resource and S3 pipeline bucket
 
@@ -276,6 +288,8 @@ Add CodeBuild resource and S3 pipeline bucket
 ```
 
 * Add CodeBuild resource
+
+http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-codebuild-project.html
 ```
   CodeBuildDeploySite:
     Type: AWS::CodeBuild::Project
@@ -307,6 +321,8 @@ Add CodeBuild resource and S3 pipeline bucket
 ```
 
 * Add CodePipeline resource
+
+http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-codepipeline-pipeline.html
 ```
   Pipeline:
     Type: AWS::CodePipeline::Pipeline
@@ -360,7 +376,7 @@ Create CloudFormation stack using pipeline.yml
 * Verify CodePipeline runs
 
 # Step 9
-Modify signup form html
+Modify signup form html (index.html)
 
 * Verify CodePipeline runs
 * Verify signup form contains help changes
@@ -370,3 +386,5 @@ Move BuildSpec commands from inline to buildspec.yml file (http://docs.aws.amazo
 Restructure project (move site/html under folder)
 Add simple test
 Add approver stage
+Add CloudFront
+
